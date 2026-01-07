@@ -101,22 +101,25 @@ function exportStats() {
     if (sessionStats.pike > 0) improvements.push(`Piking (${sessionStats.pike})`);
     if (sessionStats.shallow > 0) improvements.push(`Shallow (${sessionStats.shallow})`);
 
-    const improvementStr = improvements.length > 0 ? improvements.join('; ') : "None";
+    const improvementStr = (improvements.length > 0 ? improvements.join('; ') : "None").replace(/"/g, '""');
 
     // CSV Header: Date,Number of Reps,Number of Good Reps,Improvement needed
     const csvContent = "Date,Number of Reps,Number of Good Reps,Improvement needed\n" +
         `${date},${sessionStats.total},${sessionStats.good},"${improvementStr}"`;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
 
     link.setAttribute("href", url);
-    link.setAttribute("download", `pushup_stats_${new Date().toISOString().split('T')[0]}.csv`);
+    const fileName = `pushup_stats_${new Date().toISOString().split('T')[0]}.csv`;
+    link.setAttribute("download", fileName);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 function startSession() {
