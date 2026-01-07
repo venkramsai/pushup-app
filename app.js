@@ -58,7 +58,7 @@ let currentRepFaults = {
 const FORM_THRESHOLDS = {
     elbowAngleDown: 110, // Relaxed to catch shallow reps (was 95)
     goodDepth: 90,       // New: Must go below this for good depth
-    bodyAlignmentMin: 165, // Stricter: Sagging if < 165 (was 150)
+    bodyAlignmentMin: 155, // Relaxed piking threshold (was 165)
     bodyAlignmentMax: 185, // Stricter: Piking if > 185 (was 195)
 };
 
@@ -229,6 +229,18 @@ function analyzePushup(pose) {
 
     if (shoulder.score < minConfidence || elbow.score < minConfidence || wrist.score < minConfidence || hip.score < minConfidence) {
         correctionTextEl.innerText = "Position yourself in frame (Side View)";
+        correctionTextEl.style.color = "var(--text-secondary)";
+        return;
+    }
+
+    // Check Orientation (Must be somewhat horizontal)
+    const dx = Math.abs(shoulder.x - hip.x);
+    const dy = Math.abs(shoulder.y - hip.y);
+
+    // Relaxed check: dy should not be significantly larger than dx?
+    // Actually, simply checking if dx > dy ensures roughly < 45 degrees slope.
+    if (dy > dx * 1.5) { // Vertical-ish
+        correctionTextEl.innerText = "Get into Pushup Position";
         correctionTextEl.style.color = "var(--text-secondary)";
         return;
     }
