@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pushup Pro - AI Form Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- TensorFlow.js and MoveNet -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">Pushup<span>Pro</span></div>
+            <div class="status-indicator">
+                <div id="status-dot"></div>
+                <span id="status-text">Initializing...</span>
+            </div>
+        </header>
+
+        <!-- Main Viewport -->
+        <main class="viewport">
+            <!-- Video Feed & Canvas Overlay -->
+            <div class="camera-container">
+                <video id="video" playsinline autoplay muted></video>
+                <canvas id="output"></canvas>
+
+                <!-- Feedback Overlay (Centered) -->
+                <div id="feedback-overlay" class="feedback-overlay hidden">
+                    <span id="feedback-message">Go Lower</span>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <span class="stat-label">REPS</span>
+                    <span class="stat-value" id="rep-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="form-score">--</span>
+                    <span class="stat-unit">/10</span>
+                </div>
+                <!-- Mini feedback history or current correction -->
+                <div class="correction-card">
+                    <span class="stat-label">FORM CHECK</span>
+                    <span class="correction-text" id="correction-text">Get Ready</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="start-btn" class="btn btn-primary" disabled>Start Workout</button>
+                <button id="end-btn" class="btn btn-danger hidden">End Workout</button>
+            </div>
+        </main>
+
+        <!-- Summary Modal -->
+        <div id="summary-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>Workout Complete</h2>
+                <div class="summary-stats">
+                    <div class="summary-item">
+                        <span class="value" id="summary-total">0</span>
+                        <span class="label">Total Reps</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="value success" id="summary-good">0</span>
+                        <span class="label">Perfect Form</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="value warning" id="summary-bad">0</span>
+                        <span class="label">Form Corrections</span>
+                    </div>
+                </div>
+                <div class="summary-details">
+                    <p>Issues Detected:</p>
+                    <ul>
+                        <li>Hips Sagging: <span id="summary-sag">0</span></li>
+                        <li>Hips Too High: <span id="summary-pike">0</span></li>
+                        <li>Shallow Reps: <span id="summary-shallow">0</span></li>
+                    </ul>
+                </div>
+                <button id="close-modal-btn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
