@@ -399,3 +399,10 @@ body {
 .summary-details li:last-child {
     border-bottom: none;
 }
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}

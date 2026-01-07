@@ -24,6 +24,7 @@ const summaryBad = document.getElementById('summary-bad');
 const summarySag = document.getElementById('summary-sag');
 const summaryPike = document.getElementById('summary-pike');
 const summaryShallow = document.getElementById('summary-shallow');
+const exportBtn = document.getElementById('export-btn');
 
 let detector;
 let rafId;
@@ -90,6 +91,32 @@ function setupEventListeners() {
         summaryModal.classList.add('hidden');
         resetUI();
     });
+    if (exportBtn) exportBtn.addEventListener('click', exportStats);
+}
+
+function exportStats() {
+    const date = new Date().toLocaleDateString();
+    let improvements = [];
+    if (sessionStats.sag > 0) improvements.push(`Sagging (${sessionStats.sag})`);
+    if (sessionStats.pike > 0) improvements.push(`Piking (${sessionStats.pike})`);
+    if (sessionStats.shallow > 0) improvements.push(`Shallow (${sessionStats.shallow})`);
+
+    const improvementStr = improvements.length > 0 ? improvements.join('; ') : "None";
+
+    // CSV Header: Date,Number of Reps,Number of Good Reps,Improvement needed
+    const csvContent = "Date,Number of Reps,Number of Good Reps,Improvement needed\n" +
+        `${date},${sessionStats.total},${sessionStats.good},"${improvementStr}"`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", `pushup_stats_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function startSession() {
