@@ -95,6 +95,7 @@ function setupEventListeners() {
 }
 
 function exportStats() {
+    console.log("Exporting stats..."); // Debug log
     const date = new Date().toLocaleDateString();
     let improvements = [];
     if (sessionStats.sag > 0) improvements.push(`Sagging (${sessionStats.sag})`);
@@ -113,13 +114,18 @@ function exportStats() {
     const url = URL.createObjectURL(blob);
 
     link.setAttribute("href", url);
-    const fileName = `pushup_stats_${new Date().toISOString().split('T')[0]}.csv`;
-    link.setAttribute("download", fileName);
-    link.style.visibility = 'hidden';
+    // Simplify filename to rule out dynamic string issues
+    link.setAttribute("download", "pushup_stats.csv");
+
+    // Ensure it's in the body
     document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+
+    // Small delay to ensure click registers
+    setTimeout(() => {
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }, 100);
 }
 
 function startSession() {
@@ -195,7 +201,8 @@ async function setupCamera() {
 async function createDetector() {
     const model = poseDetection.SupportedModels.MoveNet;
     const detectorConfig = {
-        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+        modelUrl: './model/model.json'
     };
     detector = await poseDetection.createDetector(model, detectorConfig);
 }
