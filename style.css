@@ -208,9 +208,33 @@ body {
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    body {
+        overflow-y: auto;
+        /* Allow scrolling on mobile to ensure all content is accessible */
+    }
+
+    .app-container {
+        min-height: 100vh;
+        height: auto;
+        padding-bottom: 2rem;
+    }
+
+    .viewport {
+        min-height: auto;
+        flex: none;
+    }
+
+    .camera-container {
+        flex: none;
+        height: 50vh;
+        /* Fixed height instead of flex to ensure controls are visible */
+        min-height: 250px;
+    }
+
     .stats-panel {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto auto;
+        flex-shrink: 0;
     }
 
     .correction-card {
@@ -220,6 +244,20 @@ body {
 
     .stat-value {
         font-size: 2rem;
+    }
+
+    .controls {
+        flex-shrink: 0;
+        padding-top: 0.5rem;
+        padding-bottom: 1rem;
+    }
+
+    /* Ensure buttons are visible and tappable on mobile */
+    .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        min-height: 50px;
+        /* iOS tap target recommendation */
     }
 
     /* The following .summary-details rules were moved outside the media query
